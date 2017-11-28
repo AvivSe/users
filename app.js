@@ -11,11 +11,12 @@ var LocalStrategy = require('passport-local').Strategy;
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/loginapp');
+mongoose.connect('mongodb://localhost/loginapp', { useMongoClient: true });
 var db = mongoose.connection;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var chat = require('./routes/chat');
 
 // Init App
 var app = express();
@@ -31,7 +32,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Set Static Folder
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
 
 // Express Session
 app.use(session({
@@ -74,10 +75,9 @@ app.use(function (req, res, next) {
     next();
 });
 
-
-
 app.use('/', routes);
 app.use('/users', users);
+app.use('/chat', chat);
 
 // Set Port
 app.set('port', (process.env.PORT || 3000));
